@@ -13,6 +13,7 @@
 #import "GraphCreator.h"
 #import "Filter.h"
 
+
 @implementation MyDocument
 
 - (id)init
@@ -552,7 +553,10 @@
 			   didEndSelector:NULL
 				  contextInfo:nil]; */
 
+  //  [self willChangeValueForKey:@"materials"];
 	[filter wakeUp];
+   // 
+//    [self didChangeValueForKey:@"materials"];
 	/* NSWindow * w = [filter window];
 		if(!w)NSLog(@"no window!");
 		[w makeKeyAndOrderFront:sender]; */
@@ -561,6 +565,10 @@
 -(IBAction)deleteFiltration:(id)sender{
 
 	[filter deleteFiltration];
+}
+
+-(void)updateMaterialListDisplay{
+    [materialArrayController rearrangeObjects];
 }
 
 -(IBAction)retry:(id)sender{

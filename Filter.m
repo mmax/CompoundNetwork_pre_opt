@@ -48,43 +48,83 @@
 	
 }
 
+//-(IBAction)filter:(id)sender{
+//	
+//	[self deleteFiltration];
+//	
+//	BOOL visible = NO;
+//	
+//	for(Material * m in [doc materials]){
+//	
+//		for(NSDictionary * d in [self valueForKey:@"tags"]){
+//		
+//			if ([m hasTag:[d valueForKey:@"name"]])
+//				visible = YES;
+//		}
+//		
+//		for(NSDictionary * d in [self valueForKey:@"identities"]){
+//			
+//			if ([m hasIdentity:[d valueForKey:@"name"]])
+//				 visible = YES;
+//		}
+//		
+//		for(NSDictionary * d in [self valueForKey:@"networks"]){
+//			
+//			if ([m hasNetwork:[d valueForKey:@"name"]])
+//				visible = YES;
+//		}
+//		
+//		[m setIsVisible:visible];
+//		visible = NO;
+//	}
+//    [doc updateMaterialListDisplay];
+//	[self cancel:nil];
+//}
+
 -(IBAction)filter:(id)sender{
-	
-	[self deleteFiltration];
-	
-	BOOL visible = NO;
-	
-	for(Material * m in [doc materials]){
-	
-		for(NSDictionary * d in [self valueForKey:@"tags"]){
-		
-			if ([m hasTag:[d valueForKey:@"name"]])
-				visible = YES;
-		}
-		
-		for(NSDictionary * d in [self valueForKey:@"identities"]){
-			
-			if ([m hasIdentity:[d valueForKey:@"name"]])
-				 visible = YES;
-		}
-		
-		for(NSDictionary * d in [self valueForKey:@"networks"]){
-			
-			if ([m hasNetwork:[d valueForKey:@"name"]])
-				visible = YES;
-		}
-		
-		[m setIsVisible:visible];
-		visible = NO;
-	}
+
+    [self deleteFiltration];
+    
+    BOOL visible = YES;
+
+    for(Material * m in [doc materials]){
+        for(NSDictionary * d in [self valueForKey:@"tags"]){
+            if (![m hasTag:[d valueForKey:@"name"]]){
+                visible = NO;
+                break;
+            }
+        }
+        
+        for(NSDictionary * d in [self valueForKey:@"identities"]){
+            if (![m hasIdentity:[d valueForKey:@"name"]]){
+                visible = NO;
+                break;
+            }
+        }
+        
+        for(NSDictionary * d in [self valueForKey:@"networks"]){
+            if (![m hasNetwork:[d valueForKey:@"name"]]){
+                visible = NO;
+                break;
+            }
+        }
+        
+        [m setIsVisible:visible];
+        visible = YES;
+    }
+    [doc updateMaterialListDisplay];
 	[self cancel:nil];
 }
+
+
 
 
 -(void)deleteFiltration{
 
 	for(Material * m in [doc materials])
 		[m setIsVisible:YES];
+    
+    [doc updateMaterialListDisplay];
 }
 
 

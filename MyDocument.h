@@ -35,6 +35,7 @@
 -(IBAction)exportPDF:(id)sender;
 -(IBAction)filter:(id)sender;
 -(IBAction)deleteFiltration:(id)sender;
+-(void)updateMaterialListDisplay;
 -(IBAction)openPath:(id)sender;
 -(IBAction)materialArraySelectionChanged:(id)sender;
 -(void)setValue:(id)value forKey:(NSString *)key;
