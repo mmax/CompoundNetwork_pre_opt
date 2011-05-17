@@ -15,6 +15,8 @@
 		509AAB871306E98A009A62FE /* Node.m in Sources */ = {isa = PBXBuildFile; fileRef = 509AAB861306E98A009A62FE /* Node.m */; };
 		509AAB8C1306EB72009A62FE /* GraphCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 509AAB8B1306EB72009A62FE /* GraphCreator.m */; };
 		509AAB9A1306ECF0009A62FE /* Graph.m in Sources */ = {isa = PBXBuildFile; fileRef = 509AAB991306ECF0009A62FE /* Graph.m */; };
+		50B3E503137FFED800BAA713 /* QL.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B3E502137FFED800BAA713 /* QL.m */; };
+		50B3E5071380001F00BAA713 /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 50B3E5061380001F00BAA713 /* Quartz.framework */; };
 		50C618A413084B31006DF6C6 /* Filter.m in Sources */ = {isa = PBXBuildFile; fileRef = 50C618A313084B31006DF6C6 /* Filter.m */; };
 		8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */; };
 		8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165FFE840EACC02AAC07 /* InfoPlist.strings */; };
@@ -48,6 +50,9 @@
 		509AAB8B1306EB72009A62FE /* GraphCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphCreator.m; sourceTree = "<group>"; };
 		509AAB981306ECF0009A62FE /* Graph.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Graph.h; sourceTree = "<group>"; };
 		509AAB991306ECF0009A62FE /* Graph.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Graph.m; sourceTree = "<group>"; };
+		50B3E501137FFED800BAA713 /* QL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QL.h; sourceTree = "<group>"; };
+		50B3E502137FFED800BAA713 /* QL.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QL.m; sourceTree = "<group>"; };
+		50B3E5061380001F00BAA713 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		50C618A213084B31006DF6C6 /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Filter.h; sourceTree = "<group>"; };
 		50C618A313084B31006DF6C6 /* Filter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Filter.m; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* CompoundNetwork-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "CompoundNetwork-Info.plist"; sourceTree = "<group>"; };
@@ -60,6 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
+				50B3E5071380001F00BAA713 /* Quartz.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +83,7 @@
 		1058C7A8FEA54F5311CA2CBB /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				50B3E5061380001F00BAA713 /* Quartz.framework */,
 				2A37F4C4FDCFA73011CA2CEA /* AppKit.framework */,
 				13E42FBA07B3F13500E4EEF1 /* CoreData.framework */,
 				2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */,
@@ -111,6 +118,8 @@
 				50C618A313084B31006DF6C6 /* Filter.m */,
 				2A37F4AEFDCFA73011CA2CEA /* MyDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* MyDocument.m */,
+				50B3E501137FFED800BAA713 /* QL.h */,
+				50B3E502137FFED800BAA713 /* QL.m */,
 				509AAB851306E98A009A62FE /* Node.h */,
 				509AAB861306E98A009A62FE /* Node.m */,
 				509AAB8A1306EB72009A62FE /* GraphCreator.h */,
@@ -185,7 +194,11 @@
 			isa = PBXProject;
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "CompoundNetwork" */;
 			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* CompoundNetwork */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -223,6 +236,7 @@
 				509AAB8C1306EB72009A62FE /* GraphCreator.m in Sources */,
 				509AAB9A1306ECF0009A62FE /* Graph.m in Sources */,
 				50C618A413084B31006DF6C6 /* Filter.m in Sources */,
+				50B3E503137FFED800BAA713 /* QL.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +283,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				DEPLOYMENT_LOCATION = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
@@ -286,6 +301,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_LOCATION = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = CompoundNetwork_Prefix.pch;
@@ -299,6 +315,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				DEPLOYMENT_LOCATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -313,6 +330,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				DEPLOYMENT_LOCATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

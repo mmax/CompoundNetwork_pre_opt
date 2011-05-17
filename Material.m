@@ -85,9 +85,20 @@
 		NSMutableDictionary * file = [[[NSMutableDictionary alloc ]init]autorelease];
 		[file setValue:filename forKey:@"name"];
 		[file setValue:[self humanReadableFileType:[NSString stringWithFormat:@"%@/%@", path, filename]]forKey:@"type"];
+        [file setValue:[NSString stringWithFormat:@"%@/%@", path, filename] forKey:@"path"];
 		if([filename characterAtIndex:0]!='.') // skip invisible files....
 			[(NSMutableArray*)[self valueForKey:@"files"]addObject:file];
 	}
+}
+
+-(NSString *)pathForFileWithName:(NSString *)name{
+
+    for(NSDictionary * d in [self valueForKey:@"files"]){
+    
+        if([[d valueForKey:@"name"]isEqualToString:name])
+            return [d valueForKey:@"path"];
+    }
+    return nil;
 }
 
 -(void)readInfoFile{

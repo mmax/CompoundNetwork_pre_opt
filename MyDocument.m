@@ -12,6 +12,8 @@
 #import "Connector.h"
 #import "GraphCreator.h"
 #import "Filter.h"
+#import "QL.h"
+
 
 
 @implementation MyDocument
@@ -37,6 +39,7 @@
 		[connector setDoc:self];
 		
 
+        preview = NO;
 		
 		/* graphCreator = [[GraphCreator alloc]init];
 				[graphCreator setDoc:self]; */
@@ -579,4 +582,45 @@
 
 	return max/2 * (max+1);
 }
+
+-(void)openQuickLookPanel:(NSString*)path{		
+	[[QLPreviewPanel sharedPreviewPanel] setURLs:[NSArray arrayWithObject:[NSURL fileURLWithPath:path]] currentIndex:0 preservingDisplayState:YES];
+	
+	[[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFrontWithEffect:1];   // 1 = fade in 
+}
+
+-(IBAction)preview:(id)sender{
+
+    NSLog(@"huhu!");
+    
+    if(preview){
+		[[QLPreviewPanel sharedPreviewPanel] closeWithEffect:1];
+		//[window makeKeyAndOrderFront:nil];
+		preview = NO;
+	}
+	else preview = YES;
+  
+  NSString * path =  [[filesArrayController selection]valueForKey:@"path"];
+  //  NSLog(@"path: %@", path);
+    
+//	NSString  * path = [[[activeMaterial files] objectAtIndex:[fileTable selectedRow]]path];
+	NSURL *url = [NSURL fileURLWithPath:path];
+	NSArray * URLs = [NSArray arrayWithObject:url];
+	
+	[[QLPreviewPanel sharedPreviewPanel] setURLs:URLs currentIndex:0 preservingDisplayState:YES];
+	[[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFrontWithEffect:2];
+}
+
+//// Quick Look panel data source
+//
+//- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel
+//{
+//    return 1;
+//}
+//
+//- (id <QLPreviewItem>)previewPanel:(QLPreviewPanel *)panel previewItemAtIndex:(NSInteger)index
+//{
+//    return [selectedDownloads objectAtIndex:index];
+//}
+
 @end

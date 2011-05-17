@@ -56,4 +56,5 @@
 -(BOOL)isDerivative;
 -(BOOL)isProjected;
 -(NSString *)comment;
+-(NSString *)pathForFileWithName:(NSString *)name;
 @end

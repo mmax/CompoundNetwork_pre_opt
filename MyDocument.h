@@ -23,6 +23,7 @@
 	IBOutlet NSArrayController * identityArrayController;
 	IBOutlet NSArrayController * allIdentitiesArrayController;
 	IBOutlet NSArrayController * networkArrayController;
+   	IBOutlet NSArrayController * filesArrayController;
 	IBOutlet NSArrayController * allNetworksArrayController;
 	Connector * connector;
 	IBOutlet NSProgressIndicator * progressBar;
@@ -30,6 +31,7 @@
 	IBOutlet GraphCreator * graphCreator;
 	IBOutlet Filter * filter;
 	IBOutlet NSWindow * mainWindow;
+    BOOL preview;
 }
 
 -(IBAction)exportPDF:(id)sender;
@@ -80,4 +82,6 @@
 -(int)derivativesCount;
 -(IBAction)retry:(id)sender;
 -(float)sollSum:(float)max;
+-(void)openQuickLookPanel:(NSString*)path;
+-(IBAction)preview:(id)sender;
 @end
