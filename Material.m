@@ -14,7 +14,7 @@
 
 -(Material *)init{
 
-	if(self = [super init]){
+	if((self = [super init])){
 		dict = [[NSMutableDictionary alloc]init];
 
 	}
@@ -25,7 +25,7 @@
 
 -(Material *)initWithPath:(NSString *)path{
 
-	if(self = [super init]){
+	if((self = [super init])){
 		dict = [[NSMutableDictionary alloc]init];
 		NSString * name = [path lastPathComponent];
 		[self setValue:name forKey:@"name"];
@@ -36,8 +36,8 @@
 		[self setValue:[[[NSMutableArray alloc]init]autorelease] forKey:@"files"];
 		[self setValue:[[[NSMutableSet alloc]init]autorelease] forKey:@"connections"];
 		[self setValue:[NSArray arrayWithObjects:@"comment", @"tags", @"identities", @"networks", @"supersetName", @"subset", @"derivative", @"compound", @"projected", @"date", @"imagePath", nil] forKey:@"copyKeys"];
-		[self getFiles];
 		[self readInfoFile];
+		[self getFiles];
 	}
 	return self;
 }
@@ -73,6 +73,7 @@
 
 -(void)getFiles{
 	
+    //NSLog(@"getFiles!");
 	NSString *path = (NSString *)[self valueForKey:@"path"];
 	NSError *error = nil;
 	NSArray *array = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
@@ -89,6 +90,15 @@
 		if([filename characterAtIndex:0]!='.') // skip invisible files....
 			[(NSMutableArray*)[self valueForKey:@"files"]addObject:file];
 	}
+    
+    if ([array count]<=4)
+        [self addNetwork:@"UNTOUCHED"];
+
+}
+
+-(NSArray *)files{
+
+    return [self valueForKey:@"files"];
 }
 
 -(NSString *)pathForFileWithName:(NSString *)name{
@@ -258,7 +268,7 @@
 -(void)addNetwork:(NSString *)i{
 	if([self hasNetwork:i])
 		return;
-	
+	//NSLog(@"addNetwork:%@", i);
 	[self willChangeValueForKey:@"networks"];
 	NSMutableDictionary * d = [[[NSMutableDictionary alloc]init]autorelease];
 	[d setValue:i forKey:@"name"];

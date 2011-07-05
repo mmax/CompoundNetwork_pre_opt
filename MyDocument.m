@@ -192,7 +192,7 @@
 
 -(void)createMaterialFromPath:(NSString *)path{
 
-//	NSLog(@"creating material from path: %@", path);
+	//NSLog(@"creating material from path: %@", path);
 
 	if([path characterAtIndex:0] == '.')	// skip invisible files....
 		return;
@@ -396,6 +396,15 @@
 }
 
 -(NSMutableArray *)materials{return (NSMutableArray *)[self valueForKey:@"materials"];}
+
+-(NSSet *)files{
+
+    NSMutableSet * files = [[NSMutableSet alloc]init];
+    for(Material * m in [self materials]){
+        [files addObjectsFromArray:[m files]];
+    }
+    return files;
+}
 
 -(IBAction)renderGraphics:(id)sender{
 

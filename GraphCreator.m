@@ -1286,7 +1286,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 
 -(void)createDateString{
 		//NSLog(@"createDate...");
-	int mats, cons, idents, x, y, comp, der, tags;
+	int mats, cons, idents, x, y, comp, der, tags, files;
 	mats = [[doc materials]count];
 	cons = [[doc connections]count];
 	idents = [[doc identityNames]count];
@@ -1295,6 +1295,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 	comp = [doc compoundsCount];
 	der = [doc derivativesCount];
 	tags = [[doc valueForKey:@"allTags"]count];
+    files = [[doc files]count];
 	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 	[dateFormatter setDateStyle:NSDateFormatterShortStyle];
 	[dateFormatter setTimeStyle:NSDateFormatterShortStyle];
@@ -1303,8 +1304,8 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 	
 	NSString * fileName = @"CompoundNetwork";//[doc displayName];
 
-	dateString = [NSString stringWithFormat:@"%@\ngraph created on\n%@\nby M. Marcoll\n%d x %d p\n%d materials\n%d derivatives\n%d cmpnd drvts\n%d connections\n%d identities\n%d tags", 
-				  fileName, formattedDateString, x, y, mats, der, comp,  cons, idents, tags];
+	dateString = [NSString stringWithFormat:@"%@\ngraph created on\n%@\nby M.Marcoll\n%d x %d p\n%d materials\n%d derivatives\n%d cmpnd drvtvs\n%d connections\n%d identities\n%d tags\n%d files", 
+				  fileName, formattedDateString, x, y, mats, der, comp,  cons, idents, tags, files];
 	//NSLog(@"dateString: %@", dateString);
 	dateString = [self spaceString:dateString by:1];
 	//	dateString = [NSString stringWithString:[[NSDate date]description]];

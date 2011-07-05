@@ -22,6 +22,7 @@
 -(NSString *)name;
 -(NSString *)humanReadableFileType:(NSString *)path;
 -(void)getFiles;
+-(NSArray *)files;
 -(void)readInfoFile;
 -(void)createInfoFile;
 -(BOOL)writeToFile;

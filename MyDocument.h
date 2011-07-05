@@ -64,7 +64,7 @@
 -(BOOL)hasNetwork:(NSString *)iden;
 -(IBAction)addSelectedNetwork:(id)sender;
 -(NSMutableArray *)materials;
-
+-(NSSet *)files;
 -(IBAction)renderGraphics:(id)sender;
 -(IBAction)createConnections:(id)sender;
 -(NSMutableArray *)identityNames;
