@@ -39,7 +39,7 @@
 -(void)addNetwork:(NSString *)i;
 -(BOOL)hasNetwork:(NSString *)i;
 -(void)removeNetwork:(NSDictionary *)i;
-
+-(void)removeNetworkNamed:(NSString *)i;
 -(void)addConnection:(Connection *)c;
 -(void)removeConnection:(Connection *)c;
 //-(BOOL)hasConnection:(Connection *)c;

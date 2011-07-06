@@ -90,10 +90,14 @@
 		if([filename characterAtIndex:0]!='.') // skip invisible files....
 			[(NSMutableArray*)[self valueForKey:@"files"]addObject:file];
 	}
-    
-    if ([array count]<=4)
-        [self addNetwork:@"UNTOUCHED"];
 
+    NSLog(@"%@: %lu files", [self valueForKey:@"name"], [array count]);
+    if ([array count]<2)
+        [self addNetwork:@"UNTOUCHED"];
+    else{
+
+        [self removeNetworkNamed:@"UNTOUCHED"];
+    }
 }
 
 -(NSArray *)files{
@@ -295,6 +299,21 @@
 	[self willChangeValueForKey:@"networks"];
 	[(NSMutableArray*)[self valueForKey:@"networks"] removeObject:i];
 	[self didChangeValueForKey:@"networks"];
+}
+
+-(void)removeNetworkNamed:(NSString *)i{
+    NSLog(@"%@: removeNetworkNamed:%@", [self valueForKey:@"name"], i);
+    if(![self hasNetwork:i])
+        return;
+
+    NSDictionary * d;
+    for(d in [self valueForKey:@"networks"]){
+    
+        if([[d valueForKey:@"name"]isEqualToString:i])
+            break;
+    }
+    
+    [self removeNetwork:d];
 }
 
 -(void)addConnection:(Connection *) c{
