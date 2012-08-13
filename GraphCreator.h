@@ -56,6 +56,9 @@
 -(BOOL)repositionNodeIfNecessary:(Node*)c;
 -(Node *)collidingNodeForNode:(Node*)c;
 -(void) repositionNodes: (Node *) nodeA and: (Node*) nodeB;
+-(BOOL) isNodeOutsideIdentityRim:(Node*)na;
+-(void) pullNodeTowardCenter:(Node *)n;
+-(void)repositionNodeInsideIdentityRim:(Node *)n;
 -(BOOL) areNodesSubsetWiseConnected:(Node *)n and:(Node *)c;
 BOOL equalPoints(NSPoint a, NSPoint b);
 -(NSValue *)getUnionRectForNode:(Node *)n;

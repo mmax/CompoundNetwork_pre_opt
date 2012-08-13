@@ -50,7 +50,7 @@
 	NSEnumerator *t= [tags objectEnumerator];
 	NSMutableSet * group; 
 	
-	while(tag=[[t nextObject]valueForKey:@"name"]){
+	while((tag=[[t nextObject]valueForKey:@"name"])){
 		
 		group = [[self materialsWithTag:tag]retain];
 		count = 0;

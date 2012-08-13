@@ -127,13 +127,13 @@
 	[self setValue:path forKey:@"filePath"];
 
 	[self readFromFile];
-	[self setValue:[[NSImage alloc]initWithContentsOfFile:[file valueForKey:@"imagePath"]]forKey:@"image"];
+	[self setValue:[[[NSImage alloc]initWithContentsOfFile:[file valueForKey:@"imagePath"]]autorelease]forKey:@"image"];
 }
 
 -(void)createInfoFile{
 
 	NSLog(@"creating info file for material: %@", [self valueForKey:@"name"]);
-	NSMutableDictionary * file = [[NSMutableDictionary alloc]init];
+	NSMutableDictionary * file = [[[NSMutableDictionary alloc]init]autorelease];
 	[file setValue:@"this material's info file has just been created, it does not yet contain any useful information." forKey:@"comment"];
 	if(![file writeToFile:[NSString stringWithFormat:@"%@/.CompoundNetwork.plist", (NSString *)[self valueForKey:@"path"]] atomically:YES])
 		return;
@@ -213,7 +213,7 @@
 	[d setValue:tag forKey:@"name"];
 	[(NSMutableArray *)[self valueForKey:@"tags"]addObject:d];
 	NSMutableArray * tags = (NSMutableArray *)[self valueForKey:@"tags"];
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[tags sortUsingDescriptors:descriptors];
 	
@@ -246,7 +246,7 @@
 	[d setValue:[NSNumber numberWithInt:100] forKey:@"match"];
 	[(NSMutableArray *)[self valueForKey:@"identities"]addObject:d];
 	NSMutableArray * identities = (NSMutableArray *)[self valueForKey:@"identities"];
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"match" ascending:NO];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"match" ascending:NO]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[identities sortUsingDescriptors:descriptors];
 	
@@ -269,6 +269,22 @@
 	[self didChangeValueForKey:@"identities"];
 }
 
+-(NSString *)strongestIdentity{
+
+    NSArray * identities = [self valueForKey:@"identities"];
+    int i,cand = 0;
+    float match,max = 0;
+    for (i=0; i<[identities count]; i++) {
+        match = [[[identities objectAtIndex:i]valueForKey:@"match"]floatValue];
+        if (match > max){
+            max = match;
+            cand = i;
+        }
+    }
+    return [[identities objectAtIndex:cand]valueForKey:@"name"];
+}
+
+
 -(void)addNetwork:(NSString *)i{
 	if([self hasNetwork:i])
 		return;
@@ -278,7 +294,7 @@
 	[d setValue:i forKey:@"name"];
 	[(NSMutableArray *)[self valueForKey:@"networks"]addObject:d];
 	NSMutableArray * networks = (NSMutableArray *)[self valueForKey:@"networks"];
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[networks sortUsingDescriptors:descriptors];
 	

@@ -42,6 +42,7 @@
 -(void)removeNetworkNamed:(NSString *)i;
 -(void)addConnection:(Connection *)c;
 -(void)removeConnection:(Connection *)c;
+-(NSString *)strongestIdentity;
 //-(BOOL)hasConnection:(Connection *)c;
 
 -(void)setNode:(Node *)n;

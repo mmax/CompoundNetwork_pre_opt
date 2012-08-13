@@ -53,7 +53,12 @@
 	NSRange tRange;
 	NSPoint point;
 	NSMutableAttributedString * s;
-	int nameOffset = 2, lw = [NSBezierPath defaultLineWidth];	
+    
+    fontSize =  9;
+    font = [NSFont fontWithName:@"Helvetica Neue" size:fontSize];
+    
+	//int nameOffset = 2, 
+    int lw = [NSBezierPath defaultLineWidth];	
 	float grayscale;
 	[[NSColor lightGrayColor]set];
 	
@@ -102,14 +107,13 @@
 		font = [NSFont fontWithName:@"Helvetica Neue" size:fontSize];//[NSFont systemFontOfSize:fontSize];//[NSFont userFixedPitchFontOfSize:fontSize];
 		
 		
-		s = [NSMutableAttributedString alloc];
-		//NSLog(@"here?");
-		[s initWithString:[currentNode name]];
+		s = [[[NSMutableAttributedString alloc]initWithString:[currentNode name]]autorelease];
 		//NSLog(@"no");
 		tRange = NSMakeRange(0, [s length]);	
 		[s addAttribute:NSForegroundColorAttributeName value:[NSColor blackColor]/*[item color]*/ range:tRange];
 		[s addAttribute:NSFontAttributeName value:font range:tRange];
-		point = NSMakePoint([currentNode rect].origin.x+nameOffset/* ([currentNode defaultSize]/2)-([s length]*fontSize*0.5) */, [currentNode rect].origin.y+([currentNode defaultSize]/2)-fontSize / 2);
+		
+        //point = NSMakePoint([currentNode rect].origin.x+nameOffset, [currentNode rect].origin.y+([currentNode defaultSize]/2)-fontSize / 2);
 		//[s drawAtPoint:point];
 		float width = [currentNode size]-6;
 		NSRect textRect = NSMakeRect([currentNode center].x-(width-2)/2, [currentNode center].y-width/2, width-2, width);
@@ -122,9 +126,9 @@
 	//for(Node * n in materialNodes)NSLog(@"%@", [n name]);
 	for(currentNode in materialNodes){//i=0;i<[materialNodes count];i++){
 		//NSLog(@"got a node...");
-	//	currentNode = [materialNodes objectAtIndex:i];
+        //	currentNode = [materialNodes objectAtIndex:i];
 		if([currentNode isVisible]){
-			r = [currentNode rect];
+			//r = [currentNode rect];
 			path = [currentNode path];//[NSBezierPath bezierPathWithOvalInRect:r];//[NSBezierPath bezierPathWithRoundedRect:r xRadius:20 yRadius:20];			
 			[[NSColor whiteColor]set];
 			[path fill];
@@ -135,10 +139,9 @@
 			
 			float width = sin_d(45)*[currentNode size];//sqrt([currentNode defaultSize]/2);
 			NSRect textRect = NSMakeRect([currentNode center].x-width/2, [currentNode center].y-width/2, width, width);
-
-			s = [NSMutableAttributedString alloc];
-			[s initWithString:[currentNode name]];
-	
+            
+			s = [[[NSMutableAttributedString alloc]initWithString:[currentNode name]]autorelease];
+            
 			
 			tRange = NSMakeRange(0, [s length]);	
 			[s addAttribute:NSForegroundColorAttributeName value:[currentNode color]/*[item color]*/ range:tRange];
@@ -148,15 +151,14 @@
 		}
 		
 	}
-		s = [NSMutableAttributedString alloc];
-		
-		NSString * date = [controller dateString];
-		[s initWithString:date];
-		//NSLog(@"no");
-		tRange = NSMakeRange(0, [s length]);	
-		[s addAttribute:NSForegroundColorAttributeName value:[NSColor blackColor] range:tRange];
-		[s addAttribute:NSFontAttributeName value:font range:tRange];
-		point = NSMakePoint(130, 130);
+    s = [[[NSMutableAttributedString alloc]initWithString:[controller dateString]]autorelease];
+    
+    
+    //NSLog(@"no");
+    tRange = NSMakeRange(0, [s length]);	
+    [s addAttribute:NSForegroundColorAttributeName value:[NSColor blackColor] range:tRange];
+    [s addAttribute:NSFontAttributeName value:font range:tRange];
+    point = NSMakePoint(130, 130);
 		[s drawAtPoint:point]; 
 	
 	//[ drawAtPoint:NSMakePoint(50, 50)];// withAttributes:
@@ -169,9 +171,9 @@
 		[NSBezierPath fillRect:r];
 		[[NSColor grayColor]set];
 		[NSBezierPath strokeRect:r];
-		s = [NSMutableAttributedString alloc];
+		s = [[[NSMutableAttributedString alloc]initWithString: descriptionString]autorelease];
 		//NSLog(@"description string?");
-		[s initWithString: descriptionString];
+
 		//NSLog(@"no");
 		//NSLog(@"initialized");
 		tRange = NSMakeRange(0, [s length]);	

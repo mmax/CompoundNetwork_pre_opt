@@ -82,6 +82,6 @@
 -(int)derivativesCount;
 -(IBAction)retry:(id)sender;
 -(float)sollSum:(float)max;
--(void)openQuickLookPanel:(NSString*)path;
--(IBAction)preview:(id)sender;
+//-(void)openQuickLookPanel:(NSString*)path;
+//-(IBAction)preview:(id)sender;
 @end

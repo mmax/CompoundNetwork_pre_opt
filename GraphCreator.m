@@ -61,10 +61,10 @@
 		return;
 	}
 	[self renderIdentityNodes];
-	NSLog(@"identities rendered successfully. number of nodes: %d", [[self valueForKey:@"identityNodes"]count]);
+	NSLog(@"identities rendered successfully. number of nodes: %lu", [[self valueForKey:@"identityNodes"]count]);
 		[window orderFront:nil];
 	[self renderMaterialNodes];
-	NSLog(@"materials rendered successfully. number of nodes: %d", [[self valueForKey:@"materialNodes"]count]);
+	NSLog(@"materials rendered successfully. number of nodes: %lu", [[self valueForKey:@"materialNodes"]count]);
 
 	
 	////
@@ -129,7 +129,7 @@
 	NSPoint center = [self center];
 	NSEnumerator * e;
 	
-	BOOL retryFlag;
+	BOOL retryFlag = YES;
 	
 	for(i=0;i<max;i++){
 		
@@ -227,7 +227,7 @@
 	for(i=0;i<[sortedIdentities count];i++){
 		
 		n = [sortedIdentities objectAtIndex:i];	// get current node;
-		points = [[self intersectionPointsOnEllipse:[self pointArrayForEllipse] forNode:n withAverageDistance:avgDistance]retain];	//get it's intersectionpoints
+		points = [self intersectionPointsOnEllipse:[self pointArrayForEllipse] forNode:n withAverageDistance:avgDistance];//retain];	//get it's intersectionpoints
 		//NSLog(@"points for node %@: %@", [n name], points);
 		index = (i+1)%[sortedIdentities count];
 		//NSLog(@"i: %d index: %d", i, index);
@@ -248,7 +248,7 @@
 		else
 			destination = cb;
 		[n setLocation:NSMakePoint(destination.x - (nodeSize.width*0.5), destination.y - (nodeSize.height*0.5))];
-		[points release];
+		//[points release];
 	}
 	
 
@@ -260,18 +260,22 @@
 	[ellipsePoints retain];
 	NSMutableArray * points = [[[NSMutableArray alloc]init]autorelease];
 	NSArray * circle = [[self pointArrayForCircleAroundNode:n radius:r]retain];
-	long c, e;
+	long c;//, e;
 	NSPoint cPoint, ePoint;
 	double tolerance, aSquare, alpha = .5, a;
 	aSquare = 2* pow(r, 2) - (2*pow(r, 2)*cos_d(alpha));
 	a = pow(aSquare, 0.5);
 	tolerance = a;
+    NSValue * val;
 	//NSLog(@"tolerance: %f", tolerance);
 	
 	for(c=0;c<[circle count];c++){
 		cPoint = [[circle objectAtIndex:c]pointValue];
-		for(e=0;e<[ellipsePoints count];e++){
-			ePoint = [[ellipsePoints objectAtIndex:e]pointValue];
+        NSEnumerator *en = [ellipsePoints objectEnumerator];
+        
+		//for(e=0;e<[ellipsePoints count];e++){
+        while(val = [en nextObject]){
+			ePoint = [val pointValue];
 			if([self distanceBetweenPointA:cPoint andB:ePoint]<tolerance){
 				[points addObject:[NSValue valueWithPoint:cPoint]];
 				if([points count] && c<[circle count]*.25)
@@ -323,12 +327,12 @@
 
 -(NSArray *)sortedIdentities{
 	
-	NSMutableArray * sortedIdentities= [[NSMutableArray alloc]init];
+	NSMutableArray * sortedIdentities= [[[NSMutableArray alloc]init]autorelease];
 	NSArray * names = [doc identityNames];
 	int i;
 	for(i=0;i<[(NSSet *)[self valueForKey:@"identityNodes"] count];i++)
 		[sortedIdentities addObject:[self identityNodeWithName:[names objectAtIndex:i]]];
-	return [sortedIdentities retain];
+	return sortedIdentities;//[sortedIdentities retain];
 }
 
 -(void)resizeTo:(NSSize)s{
@@ -345,9 +349,11 @@
 
 -(double)distanceBetweenPointA:(NSPoint)a andB:(NSPoint)b{
 	
-	double deltaX = abs(b.x - a.x);
-	double deltaY = abs(b.y - a.y);
-	return pow(pow(deltaX, 2)+pow(deltaY, 2), 0.5);
+//	double deltaX = abs(b.x - a.x);
+//	double deltaY = abs(b.y - a.y);
+//	return pow(pow(deltaX, 2)+pow(deltaY, 2), 0.5);
+    
+    return pow(pow(b.x - a.x, 2)+pow(b.y - a.y, 2), 0.5);
 }
 
 -(Node *)identityNodeWithName:(NSString *)n{
@@ -359,22 +365,21 @@
 
 -(NSArray *)pointArrayForEllipse{
 	
-	float a, b, x, y;
+	float i, a, b, x, y=0;
 	b = [self size].height*.5-kNodeSize*2;
 	a = [self size].width*.5-kNodeSize*2;
-	x = -1 * a;
-	y = 0;
+
+
 	NSMutableArray * points = [[NSMutableArray alloc]init];
 	NSPoint center = [self center];
-	float i;
 	
-	for (i=-1*a;i<a;i+=0.5){
+	for (i=-1*a;i<a;i+=2){//0.5){
 		x = i;
 		y = pow( ( ( 1- ( pow(x, 2)/pow(a, 2) ) )*pow(b,2) ), 0.5);
 		[points addObject:[NSValue valueWithPoint:NSMakePoint(x+center.x, y+center.y)]];
 	}
 	
-	for (i=-1*a;i<=a;i+=0.5){
+	for (i=-1*a;i<=a;i+=2){//0.5){
 		x = i;
 		y = pow( ( ( 1- ( pow(x, 2)/pow(a, 2) ) )*pow(b,2) ), 0.5) * -1;
 		[points addObject:[NSValue valueWithPoint:NSMakePoint(x+center.x, y+center.y)]];
@@ -390,7 +395,7 @@
 	double winkel, sinusWinkel, deltaX, deltaY;
 	NSPoint M = [n center], p;
 	
-	for (i=0;i<=360;i+=0.5){
+	for (i=0;i<=360;i+=2){//=0.5){
 		winkel = i;
 		sinusWinkel = sin(i*0.0174532925199);
 		if(winkel<90 || winkel > 270)flag = -1;
@@ -430,7 +435,7 @@
 	[(NSMutableSet *)[self valueForKey:@"materialNodes"] removeAllObjects];
 	NSMutableSet * materialNodes = [[[NSMutableSet alloc]init]autorelease];
 	[self setValue:materialNodes forKey:@"materialNodes"];
-	NSLog(@"materialNames count: %d", [materialNames count]);
+	NSLog(@"materialNames count: %lu", [materialNames count]);
 	/* for(NSString * name in materialNames){// */
 
 	while([materialNames count]){
@@ -452,7 +457,7 @@
 		// now sure to have a "supermaterial", BUT we could have N layers of subsets!
 		
 		perfectLocation = [self perfectLocationForMaterialNodeWithName:name];	
-		n = [[Node alloc]init];
+		n = [[[Node alloc]init]autorelease];
 		//NSLog(@"creating node for material: %@", name);
 		[n setLocation: perfectLocation];
 		[n setName:name];
@@ -555,7 +560,7 @@
 	float deltaX, deltaY,match;//, c;
 	NSMutableArray * identityDicts = [NSMutableArray arrayWithArray: (NSArray *)[mat valueForKey:@"identities"]];
 	
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"match" ascending:NO];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"match" ascending:NO]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[identityDicts sortUsingDescriptors:descriptors];
 	
@@ -691,7 +696,7 @@
 
 -(float)getStartWinkelForSubsetsOfNode:(Node *)n{
 	
-	float deltaX, deltaY, /* m, */ alpha, startWinkel, /* flag, */ a, c, b;
+	float deltaX, deltaY, /* m, */ alpha, startWinkel=0, /* flag, */ a, c, b;
 	
 	if([[n material]isSubset])
 		return [self getStartWinkelForSubsetsOfNode:[self materialNodeWithName:[[[n material] superMaterial]name]]];
@@ -837,8 +842,8 @@
 		[doc createErrorFromString:[NSString stringWithFormat:@"trying to reposition nodes within the same subsetCluster: %@ and %@", [nodeA name], [nodeB name]]];
 	
 	NSPoint center = [self center], origin;
-	NSRect unionRectA, unionRectB, tempRect;
-	float m, deltaX, deltaY, alpha, a, b, c, rx, ry, x, y, distance, kNode;//, deltaDistance;
+	NSRect unionRectA, unionRectB;//, tempRect;
+	float m, deltaX, deltaY, alpha, a, b, c, rx, ry, x, y;//, distance;//, deltaDistance;
 
 	Node * na, *nb;
 	if([[nodeA material] isSubset])
@@ -873,7 +878,6 @@
 		origin.y += rx*.5;
 		
 		[nb setLocation:origin];
-		
 
 		origin = [na rect].origin;
 		origin.x += ry*.5;
@@ -881,58 +885,64 @@
 		[na setLocation:origin];
 		
 		//[self repositionNodes:na and:nb];
-		return;
+		//return;
 	}
 	
-	kNode = kNodeSize;
-	NSPoint p1, p2;
-	
-	//make sure we have the rects for entire subset clusters if necessary
-	unionRectA = [[self getUnionRectForNode:na]rectValue];
-	unionRectB = [[self getUnionRectForNode:nb]rectValue];
-	
-	// compute distances and deltas ( with correct sign )
-	deltaX = unionRectB.origin.x -  unionRectA.origin.x;
-	deltaY = unionRectB.origin.y -  unionRectA.origin.y;
-	distance = sqrt(pow(deltaX, 2)+pow(deltaY, 2));
-	
-	// now sort them to compute the distance needed
-	if(unionRectA.origin.x > unionRectB.origin.x){
-		tempRect = unionRectB;
-		unionRectA = unionRectB;
-		unionRectB = tempRect;
-	}
-	
-	if (deltaX == 0) {
-		/* [doc createErrorFromString:@"deltaX == 0"];
-				return; */
-		deltaX=0.1;
-	}
-	c = sqrt(pow(unionRectA.size.width+kNodeOffset, 2)+pow(unionRectA.size.height+kNodeOffset, 2));
-	
-	m	= deltaY/deltaX;
-	alpha = atan_d(m);
-	a = sin_d(alpha) * c;
-	b = cos_d(alpha) * c;
-	x = (a - deltaX) /2;
-	y = (b - deltaY) /2;
-	
-
-	
-	p1.x = [na rect].origin.x - x;
-	p1.y = [na rect].origin.y - y;
-	
-	
-	//NSLog(@"repositionNodes... setting new origin for node %@ at %@ to %@", [na name], [NSValue valueWithPoint:[na rect].origin], [NSValue valueWithPoint:p1]);
-	[na setLocation:p1];
-	
-	p2.x = [nb rect].origin.x  + x;
-	p2.y = [nb rect].origin.y  + y;
-	//NSLog(@"repositionNodes... setting new origin for node %@ at %@ to %@", [nb name], [NSValue valueWithPoint:[nb rect].origin], [NSValue valueWithPoint:p2]);
-	//NSLog(@"repositionNodes: x: %f, y: %f, a: %f, b: %f, m: %f", x, y, a, b, m);
-	//	NSLog(@"repositionNodes: computational FUCKUP: x: %f, y: %f, a: %f, b: %f, m: %f, deltaX: %f", x, y, a, b, m, deltaX);
-	
-	[nb setLocation:p2];
+	else{
+        
+        //kNode = kNodeSize;
+        NSPoint p1, p2;
+        
+        //make sure we have the rects for entire subset clusters if necessary
+        unionRectA = [[self getUnionRectForNode:na]rectValue];
+        unionRectB = [[self getUnionRectForNode:nb]rectValue];
+        
+        // compute distances and deltas ( with correct sign )
+        deltaX = unionRectB.origin.x -  unionRectA.origin.x;
+        deltaY = unionRectB.origin.y -  unionRectA.origin.y;
+        //distance = sqrt(pow(deltaX, 2)+pow(deltaY, 2));
+        
+        // now sort them to compute the distance needed
+        if(unionRectA.origin.x > unionRectB.origin.x){
+           // tempRect = unionRectB;
+            unionRectA = unionRectB;
+            //unionRectB = tempRect;
+        }
+        
+        if (deltaX == 0)
+            deltaX=0.1;
+        
+        c = sqrt(pow(unionRectA.size.width+kNodeOffset, 2)+pow(unionRectA.size.height+kNodeOffset, 2));
+        
+        m	= deltaY/deltaX;
+        alpha = atan_d(m);
+        a = sin_d(alpha) * c;
+        b = cos_d(alpha) * c;
+        x = (a - deltaX) /2;
+        y = (b - deltaY) /2;
+        
+        p1.x = [na rect].origin.x - x;
+        p1.y = [na rect].origin.y - y;
+        
+        //NSLog(@"repositionNodes... setting new origin for node %@ at %@ to %@", [na name], [NSValue valueWithPoint:[na rect].origin], [NSValue valueWithPoint:p1]);
+        [na setLocation:p1];
+        
+        p2.x = [nb rect].origin.x  + x;
+        p2.y = [nb rect].origin.y  + y;
+        //NSLog(@"repositionNodes... setting new origin for node %@ at %@ to %@", [nb name], [NSValue valueWithPoint:[nb rect].origin], [NSValue valueWithPoint:p2]);
+        //NSLog(@"repositionNodes: x: %f, y: %f, a: %f, b: %f, m: %f", x, y, a, b, m);
+        //	NSLog(@"repositionNodes: computational FUCKUP: x: %f, y: %f, a: %f, b: %f, m: %f, deltaX: %f", x, y, a, b, m, deltaX);
+        
+        [nb setLocation:p2];
+    }
+    
+    if([self isNodeOutsideIdentityRim:na])
+        [self repositionNodeInsideIdentityRim:na];
+    
+    if([self isNodeOutsideIdentityRim:nb])
+        [self repositionNodeInsideIdentityRim:nb];           
+   
+    
 	if([self isNodeMemberOfASubsetCluster:na])
 		[self recreateSubsetNodesForNode:na];//[self dragSubsetNodesOfNode:na byX:x*(-1) y:y*(-1)];
 	
@@ -941,6 +951,65 @@
 		[self recreateSubsetNodesForNode:nb];//[self dragSubsetNodesOfNode:nb byX:x y:y];
 
 	//NSLog(@"done!\n");
+}
+
+-(void)repositionNodeInsideIdentityRim:(Node *)n{
+    
+    for(int i = 0;[self isNodeOutsideIdentityRim:n];i++){
+        [self pullNodeTowardCenter:n];
+        if(i>3){
+            NSLog(@"resetting to perfect location: %@", [n name]);
+            [n setLocation:[self perfectLocationForMaterialNodeWithName:[n name]]];//[self pullNodeTowardCenter:na];
+            break;
+        }
+    }
+    [self repositionNodeIfNecessary:n];
+}
+
+-(void)pullNodeTowardCenter:(Node *)n{
+    NSLog(@"pulling towards center...: %@", [n name]);
+    NSPoint location = [n location], center = [self center];
+    if(location.x > center.x)
+        location.x -= kNodeOffset*.5;
+    else
+        location.x += kNodeOffset*.5;
+    
+    if(location.y > center.y)
+        location.y -= kNodeOffset*.5;
+    else
+        location.y += kNodeOffset*.5;
+    
+    [n setLocation:location];
+    
+}
+
+-(BOOL) isNodeOutsideIdentityRim:(Node *)n{
+    Node * strongestIdentityNode = [self identityNodeWithName:[[n material] strongestIdentity]];
+    NSPoint identityLocation = [strongestIdentityNode location];
+    NSPoint center = [self center], p = [n location];;
+    int x, y;
+    
+    // find quadrant
+    if(identityLocation.x >= center.x)
+        x = 1;
+    else
+        x = -1;
+    if(identityLocation.y >= center.y)
+        y = 1;
+    else
+        y = -1;
+    
+    // 
+    if(x > 0 && p.x > identityLocation.x - kNodeOffset)
+        return YES;
+    if(x < 0 && p.x < identityLocation.x - kNodeOffset)
+        return YES;
+    if(y > 0 && p.y > identityLocation.y - kNodeOffset)
+        return YES;
+    if(y < 0 && p.y < identityLocation.y - kNodeOffset)
+        return YES;
+    
+    return NO;
 }
 
 -(BOOL) areNodesSubsetWiseConnected:(Node *)n and:(Node *)c{
@@ -956,7 +1025,7 @@
 	}
 	
 	
-	if(!([self isNodeMemberOfASubsetCluster:n] || [self isNodeMemberOfASubsetCluster:c])) // if only one of them is not part of a subsetcluser, they can't be subsetmässig connected!
+	if(!([self isNodeMemberOfASubsetCluster:n] && [self isNodeMemberOfASubsetCluster:c])) // if only one of them is not part of a subsetcluser, they can't be subsetmässig connected!
 		return NO;
 	
 	Material * a, *b, * topA, * topB;
@@ -1081,7 +1150,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 		}
 		
 		if([m isProjected])// || [[m files]count]==0)
-			[nod setColor:[[NSColor grayColor]retain]];
+			[nod setColor:[NSColor grayColor]];
 		
 		
 		[nod setPath:path];
@@ -1100,13 +1169,13 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 	[doc createConnections:self];
 	
 	if(![self valueForKey:@"connectionPaths"])
-	   [self setValue:[[NSMutableSet alloc]init] forKey:@"connectionPaths"];
+	   [self setValue:[[[NSMutableSet alloc]init]autorelease] forKey:@"connectionPaths"];
 	else
 	   [(NSMutableSet *)[self valueForKey:@"connectionPaths"]removeAllObjects];
 	   
 	[self setValue:[doc connections] forKey:@"connections"];
 	
-	NSMutableArray * con, *connectionsBetweenAAndB, * connectionCopy = [NSMutableArray arrayWithArray:[[doc connections]allObjects]], * controlPoints;
+	NSMutableArray *connectionsBetweenAAndB, * connectionCopy = [NSMutableArray arrayWithArray:[[doc connections]allObjects]], * controlPoints;
 	int i, o;
 	float width, sizeWidth = [self size].width, offset;// =120;
 	double factor, distance;
@@ -1129,12 +1198,12 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 			
 			width = [connectionsBetweenAAndB count];
 			//NSLog(@"found %d connections between %@ and %@ :%@", [connectionsBetweenAAndB count], [matA name], [matB name], connectionsBetweenAAndB);
-			con = [[NSMutableArray alloc]init];
+			//con = [[NSMutableArray alloc]init];
 			nodeA = [self materialNodeWithName:[matA name]];
 			nodeB = [self materialNodeWithName:[matB name]];
 			start = [nodeA center];
 			end	= [nodeB center];
-			path = [[NSBezierPath alloc]init];
+			path = [[[NSBezierPath alloc]init]autorelease];
 			
 			distance = [self distanceBetweenPointA:start andB:end];
 			factor = distance*3 / sizeWidth;
@@ -1189,7 +1258,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 -(NSMutableArray *)getControlPointsForLineBetween:(NSPoint)start and:(NSPoint)end withOffset:(float)offset {
 	
 	NSPoint c1, c2, ctrl;
-	NSMutableArray * points = [[[NSMutableArray alloc]init]retain];
+	NSMutableArray * points = [[[NSMutableArray alloc]init]autorelease];
 	float factor, deltaX, deltaY, centerX = [self center].x, centerY = [self center].y;
 	
 	ctrl.x = (end.x-start.x)/2+start.x;
@@ -1215,7 +1284,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 -(void)createPathsForMaterialIdentityConnections{
 	
 	if(![self valueForKey:@"materialIdentityConnectionPaths"])
-		[self setValue:[[NSMutableSet alloc]init] forKey:@"materialIdentityConnectionPaths"];
+		[self setValue:[[[NSMutableSet alloc]init]autorelease] forKey:@"materialIdentityConnectionPaths"];
 	else
 		[[self valueForKey:@"materialIdentityConnectionPaths"]removeAllObjects];
 	
@@ -1226,7 +1295,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 	NSPoint start, end, ctrl1, ctrl2;
 	NSBezierPath * path;
 	NSDictionary * identity;
-	NSMutableArray * con, *controlPoints;
+	NSMutableArray *controlPoints;
 	float offset =100, brightness, match, width;
 	CGFloat lineDash[2] = {3, 5};
 	
@@ -1239,7 +1308,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 			d = [(NSArray *)[mat valueForKey:@"identities"] objectEnumerator];
 			while(identity = [d nextObject]){
 				
-				con = [[NSMutableArray alloc]init];
+				//con = [[NSMutableArray alloc]init];
 				identityNode = [self identityNodeWithName:[identity valueForKey:@"name"]];
 				end = [identityNode center];
 				
@@ -1266,6 +1335,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 		}
 	}
 }
+
 
 -(NSMutableSet *)identityNodes{
 	//NSLog(@"GraphCreator: identityNodes: count: %d", [[self valueForKey:@"identityNodes"]count]);
@@ -1315,7 +1385,7 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 -(NSString *)spaceString:(NSString *)s by:(int)x{
 	
 	int i, space;
-	NSString * result = [[NSString alloc]init];
+	NSString * result = [[[NSString alloc]init]autorelease];
 	for(i=0;i<[s length];i++){
 		
 		for(space=0;space<x;space++){
@@ -1339,12 +1409,29 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 	if(!m) return nil;
 	NSString * s = [NSString stringWithFormat:@"%@\n\n%@", [m comment], [m description]];
 	
-	return [s retain];
+	return s;//[s retain];
 	
 }
 
--(void)print{
+//-(void)print{
+//
+//	NSSavePanel * savePanel;
+//	int result;
+//	NSString * path;		
+//	savePanel = [NSSavePanel savePanel];
+//	[savePanel setRequiredFileType:@"pdf"];
+//	result = [savePanel runModalForDirectory:nil file:nil];
+//	
+//	if(result == NSOKButton) {
+//		path = [NSString stringWithString:[savePanel filename]];		
+//		NSData * data = [graph dataWithPDFInsideRect:[graph bounds]];
+//		if(![data writeToFile:path atomically:YES])
+//			[doc createErrorFromString:@"Could Not Print!"];	
+//	}
+//}
 
+-(void)print{
+    
 	NSSavePanel * savePanel;
 	int result;
 	NSString * path;		
@@ -1353,12 +1440,20 @@ BOOL equalPoints(NSPoint a, NSPoint b){
 	result = [savePanel runModalForDirectory:nil file:nil];
 	
 	if(result == NSOKButton) {
-		path = [NSString stringWithString:[savePanel filename]];		
+		path = [NSString stringWithString:[savePanel filename]];	
 		NSData * data = [graph dataWithPDFInsideRect:[graph bounds]];
 		if(![data writeToFile:path atomically:YES])
-			[doc createErrorFromString:@"Could Not Print!"];	
+			[doc createErrorFromString:@"Could Not Print PDF!"];
+        
+        path = [path stringByAppendingFormat:@".tiff"];
+        NSImage * img = [[[NSImage alloc]initWithData:data]autorelease];
+        NSData * tiff = [img TIFFRepresentation];
+
+        if(![tiff writeToFile:path atomically:YES])
+			[doc createErrorFromString:@"Could Not Print TIFF!"];
 	}
 }
+
 
 -(BOOL)isPoint:(NSPoint)p inRect:(NSRect)r{
 	

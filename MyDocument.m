@@ -32,7 +32,7 @@
 		[self setValue:allIdentities forKey:@"allIdentities"];
 		NSMutableArray * allNetworks = [[[NSMutableArray alloc]init]autorelease];
 		[self setValue:allNetworks forKey:@"allNetworks"];
-		NSMutableArray * connections = [[[NSMutableSet alloc]init]autorelease];
+		NSMutableArray * connections = [[[NSMutableArray alloc]init]autorelease];
 		[self setValue:connections forKey:@"connections"];
 		
 		connector = [[Connector alloc]init];
@@ -165,7 +165,7 @@
 
 	//NSMutableArray * materials = [[[NSMutableArray alloc]init]autorelease];
 
-	NSLog(@"loading materials");
+	//NSLog(@"loading materials");
 	NSString *path = (NSString *)[self valueForKey:@"NetworkPath"];
 	NSError *error = nil;
 	NSArray *array = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:&error];
@@ -174,15 +174,19 @@
 		NSLog(@"%@", [error description]);
 	}
 
-	[self setIndeterminateProgressTask:@"Loading materials"];
+	[self setProgressTask:@"Loading materials"];
 	[self displayProgress:YES];
-	
-	for(NSString * path in array){
-		[self setIndeterminateProgressTask:[NSString stringWithFormat:@"Loading Material: %@", [path lastPathComponent]]];
-		[self createMaterialFromPath:path];
+	NSString * p;
+    float prog, c = [array count];
+	for(int i=0;i<[array count];i++){//NSString * path in array){
+        p = [array objectAtIndex:i];
+        prog = i/c * 100.0;
+        [self setProgress:prog];
+		[self setProgressTask:[NSString stringWithFormat:@"Loading Material: %@", [p lastPathComponent]]];
+		[self createMaterialFromPath:p];
 	}
 //	[self setValue:[NSMutableArray arrayWithArray:array] forKey:@"MaterialPaths"];
-    NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)];
+    NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES selector:@selector(caseInsensitiveCompare:)]autorelease];
     NSArray * sds = [NSArray arrayWithObject:sd];
     [[self valueForKey: @"materials"] sortUsingDescriptors:sds];
 	[materialArrayController bind:@"contentArray" toObject:self withKeyPath:@"materials" options:nil];
@@ -274,7 +278,7 @@
 	[(NSMutableArray *)[self valueForKey:@"allTags"]addObject:d];
 	
 	NSMutableArray * tags = (NSMutableArray *)[self valueForKey:@"allTags"];
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[tags sortUsingDescriptors:descriptors];
 	[self didChangeValueForKey:@"allTags"];
@@ -323,7 +327,7 @@
 	[(NSMutableArray *)[self valueForKey:@"allIdentities"]addObject:d];
 	
 	NSMutableArray * tags = (NSMutableArray *)[self valueForKey:@"allIdentities"];
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[tags sortUsingDescriptors:descriptors];
 	[self didChangeValueForKey:@"allIdentities"];
@@ -372,7 +376,7 @@
 	[(NSMutableArray *)[self valueForKey:@"allNetworks"]addObject:d];
 	
 	NSMutableArray * networks = (NSMutableArray *)[self valueForKey:@"allNetworks"];
-	NSSortDescriptor * sd = [[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES];
+	NSSortDescriptor * sd = [[[NSSortDescriptor alloc]initWithKey:@"name" ascending:YES]autorelease];
 	NSArray * descriptors = [NSArray arrayWithObject:sd];
 	[networks sortUsingDescriptors:descriptors];
 	[self didChangeValueForKey:@"allNetworks"];
@@ -399,7 +403,7 @@
 
 -(NSSet *)files{
 
-    NSMutableSet * files = [[NSMutableSet alloc]init];
+    NSMutableSet * files = [[[NSMutableSet alloc]init]autorelease];
     for(Material * m in [self materials]){
         [files addObjectsFromArray:[m files]];
     }
@@ -592,34 +596,34 @@
 	return max/2 * (max+1);
 }
 
--(void)openQuickLookPanel:(NSString*)path{		
-	[[QLPreviewPanel sharedPreviewPanel] setURLs:[NSArray arrayWithObject:[NSURL fileURLWithPath:path]] currentIndex:0 preservingDisplayState:YES];
-	
-	[[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFrontWithEffect:1];   // 1 = fade in 
-}
-
--(IBAction)preview:(id)sender{
-
-    NSLog(@"huhu!");
-    
-    if(preview){
-		[[QLPreviewPanel sharedPreviewPanel] closeWithEffect:1];
-		//[window makeKeyAndOrderFront:nil];
-		preview = NO;
-	}
-	else preview = YES;
-  
-  NSString * path =  [[filesArrayController selection]valueForKey:@"path"];
-  //  NSLog(@"path: %@", path);
-    
-//	NSString  * path = [[[activeMaterial files] objectAtIndex:[fileTable selectedRow]]path];
-	NSURL *url = [NSURL fileURLWithPath:path];
-	NSArray * URLs = [NSArray arrayWithObject:url];
-	
-	[[QLPreviewPanel sharedPreviewPanel] setURLs:URLs currentIndex:0 preservingDisplayState:YES];
-	[[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFrontWithEffect:2];
-}
-
+//-(void)openQuickLookPanel:(NSString*)path{		
+//	[[QLPreviewPanel sharedPreviewPanel] setURLs:[NSArray arrayWithObject:[NSURL fileURLWithPath:path]] currentIndex:0 preservingDisplayState:YES];
+//	
+//	[[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFrontWithEffect:1];   // 1 = fade in 
+//}
+//
+//-(IBAction)preview:(id)sender{
+//
+//    NSLog(@"huhu!");
+//    
+//    if(preview){
+//		[[QLPreviewPanel sharedPreviewPanel] closeWithEffect:1];
+//		//[window makeKeyAndOrderFront:nil];
+//		preview = NO;
+//	}
+//	else preview = YES;
+//  
+//  NSString * path =  [[filesArrayController selection]valueForKey:@"path"];
+//  //  NSLog(@"path: %@", path);
+//    
+////	NSString  * path = [[[activeMaterial files] objectAtIndex:[fileTable selectedRow]]path];
+//	NSURL *url = [NSURL fileURLWithPath:path];
+//	NSArray * URLs = [NSArray arrayWithObject:url];
+//	
+//	[[QLPreviewPanel sharedPreviewPanel] setURLs:URLs currentIndex:0 preservingDisplayState:YES];
+//	[[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFrontWithEffect:2];
+//}
+//
 //// Quick Look panel data source
 //
 //- (NSInteger)numberOfPreviewItemsInPreviewPanel:(QLPreviewPanel *)panel
